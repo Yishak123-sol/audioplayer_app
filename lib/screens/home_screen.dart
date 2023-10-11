@@ -1,10 +1,13 @@
-import 'package:audio/screens/artist_screen.dart';
-import 'package:audio/screens/songs_screen.dart';
+import 'package:audio/screens/default_tab_controller/all_songs_screen.dart';
+import 'package:audio/screens/search.dart';
+import 'package:audio/widgets/favorite.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import 'albums_screen.dart';
-import 'music_palying.dart';
+import 'package:provider/provider.dart';
+import '../controler/fetch_data_provider.dart';
+import 'default_tab_controller/album_screen.dart';
+import 'default_tab_controller/artist_screen.dart';
+import 'display_playing_music.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -99,19 +102,31 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    final fetchDataController = Provider.of<FetchData>(context);
     return DefaultTabController(
       length: tabs.length,
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.black,
-            actions: const [
-              Icon(Icons.search),
-              SizedBox(
+            actions: [
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) {
+                          return const Search();
+                        },
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.search)),
+              const SizedBox(
                 width: 10,
               ),
-              Icon(Icons.more_vert),
-              SizedBox(
+              const Icon(Icons.more_vert),
+              const SizedBox(
                 width: 20,
               ),
             ],
@@ -119,19 +134,84 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Column(
             children: [
               TabBar(tabs: tabs),
-              const Expanded(
+               const Expanded(
                 child: TabBarView(
                   children: [
                     ArtistScreen(),
-                    SongsScreen(),
+                    AllSongsScreen(),
                     AlbumScreen(),
-                    Center(child: Text('per')),
+                    Favorite(),
                   ],
                 ),
               ),
             ],
           ),
-          bottomNavigationBar: const MusicisPlaying(),
+          bottomNavigationBar: !fetchDataController.bottomDisplayFunc()
+              ? null
+              : GestureDetector(
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return const DisplayPlayingSongs();
+                  })),
+                  child: Container(
+                    color: const Color.fromARGB(221, 34, 34, 34),
+                    height: 70,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fetchDataController
+                                      .listOfSongMOdel![
+                                          fetchDataController.index!]
+                                      .artist
+                                      .toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  fetchDataController
+                                      .listOfSongMOdel![
+                                          fetchDataController.index!]
+                                      .title
+                                      .toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(color: Colors.grey),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(left: 25),
+                            child: InkWell(
+                              onTap: () {
+                                fetchDataController.playPause();
+                              },
+                              child: fetchDataController.isPlaying
+                                  ? const Icon(
+                                      Icons.pause_circle,
+                                      size: 35,
+                                    )
+                                  : const Icon(
+                                      Icons.play_circle,
+                                      size: 35,
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
         ),
       ),
     );
