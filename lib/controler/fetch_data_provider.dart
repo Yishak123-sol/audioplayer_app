@@ -207,11 +207,32 @@ class FetchData extends ChangeNotifier {
 
   Future<Uint8List?> fetchAlbumArtwork() async {
     // Fetch album artwork data for the given URI
-   Uint8List? albumArtwork = await onAudioQuery.queryArtwork(
+    Uint8List? albumArtwork = await onAudioQuery.queryArtwork(
       songModel!.id,
       ArtworkType.AUDIO,
     );
 
     return albumArtwork;
+  }
+
+  Widget image() {
+    return FutureBuilder<Uint8List?>(
+      future: fetchAlbumArtwork(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data == null) {
+          return const Text('No artwork available');
+        } else {
+          return Image.memory(
+            snapshot.data!,
+            width: 300,
+            height: 300, 
+          );
+        }
+      },
+    );
   }
 }

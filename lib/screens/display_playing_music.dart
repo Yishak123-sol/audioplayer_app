@@ -28,7 +28,6 @@ class _DisplayPlayingSongsState extends State<DisplayPlayingSongs> {
         Provider.of<FetchData>(context, listen: false).fetchAlbumArtwork();
     @override
     insitstate() {
-      const DisplayImage();
       albumArtwork;
       super.initState();
     }
@@ -52,7 +51,7 @@ class _DisplayPlayingSongsState extends State<DisplayPlayingSongs> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const DisplayImage(),
+            Provider.of<FetchData>(context, listen: false).image(),
             const DisplayPlayingMusic(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,7 +188,7 @@ class _DisplayPlayingMusicState extends State<DisplayPlayingMusic> {
                 setState(() {
                   Provider.of<FetchData>(context, listen: false)
                       .incrementIndex();
-                  const DisplayImage();
+                  Provider.of<FetchData>(context).image();
                 });
               },
               child: const Icon(
@@ -204,42 +203,42 @@ class _DisplayPlayingMusicState extends State<DisplayPlayingMusic> {
   }
 }
 
-class DisplayImage extends StatefulWidget {
-  const DisplayImage({super.key});
+// class DisplayImage extends StatefulWidget {
+//   const DisplayImage({super.key});
 
-  @override
-  State<DisplayImage> createState() => _DisplayImageState();
-}
+//   @override
+//   State<DisplayImage> createState() => _DisplayImageState();
+// }
 
-class _DisplayImageState extends State<DisplayImage> {
-  @override
-  Widget build(BuildContext context) {
-    Future<Uint8List?> albumArtwork =
-        Provider.of<FetchData>(context, listen: false).fetchAlbumArtwork();
+// class _DisplayImageState extends State<DisplayImage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     Future<Uint8List?> albumArtwork =
+//         Provider.of<FetchData>(context, listen: false).fetchAlbumArtwork();
 
-    @override
-    initState() {
-      albumArtwork;
-      super.initState();
-    }
+//     @override
+//     initState() {
+//       albumArtwork;
+//       super.initState();
+//     }
 
-    return FutureBuilder<Uint8List?>(
-      future: albumArtwork,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (!snapshot.hasData || snapshot.data == null) {
-          return const Text('No artwork available');
-        } else {
-          return Image.memory(
-            snapshot.data!,
-            width: 100,
-            height: 100,
-          );
-        }
-      },
-    );
-  }
-}
+//     return FutureBuilder<Uint8List?>(
+//       future: albumArtwork,
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const CircularProgressIndicator();
+//         } else if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         } else if (!snapshot.hasData || snapshot.data == null) {
+//           return const Text('No artwork available');
+//         } else {
+//           return Image.memory(
+//             snapshot.data!,
+//             width: 100,
+//             height: 100,
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
