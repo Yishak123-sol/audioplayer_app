@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:audio/controler/database.dart';
 import 'package:audio/controler/fetch_data_provider.dart';
 import 'package:flutter/material.dart';
@@ -22,15 +21,7 @@ class _DisplayPlayingSongsState extends State<DisplayPlayingSongs> {
   @override
   Widget build(BuildContext context) {
     Database dataBaseController = Provider.of<Database>(context, listen: false);
-    FetchData fetchDataController =
-        Provider.of<FetchData>(context, listen: false);
-    Future<Uint8List?> albumArtwork =
-        Provider.of<FetchData>(context, listen: false).fetchAlbumArtwork();
-    @override
-    insitstate() {
-      albumArtwork;
-      super.initState();
-    }
+    FetchData fetchDataController = Provider.of<FetchData>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,42 +42,66 @@ class _DisplayPlayingSongsState extends State<DisplayPlayingSongs> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Provider.of<FetchData>(context, listen: false).image(),
-            const DisplayPlayingMusic(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                const Icon(
-                  Icons.menu,
-                  size: 20,
-                  color: Color.fromRGBO(255, 255, 255, 1),
+                const Image(
+                  height: 300,
+                  width: 300,
+                  fit: BoxFit.cover,
+                  image: AssetImage('assets/music.png'),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    dataBaseController.writeData(
-                      fetchDataController.songModel!,
-                    );
-                  },
-                  child: const Icon(
-                    Icons.favorite,
-                    size: 20,
-                    color: Colors.red,
-                  ),
+                const SizedBox(
+                  height: 20,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    print(dataBaseController.readData());
-                  },
-                  child: const Icon(
-                    Icons.shuffle,
-                    size: 20,
-                    color: Colors.white,
-                  ),
+                Text(fetchDataController.songModel!.artist.toString()),
+                Text(
+                  fetchDataController.songModel!.title.toString(),
+                  style: const TextStyle(color: Colors.grey),
                 ),
-                const Icon(
-                  Icons.more_horiz,
-                  size: 20,
-                  color: Colors.white,
+                const SizedBox(
+                  height: 20,
+                ),
+                const DisplayPlayingMusic(),
+              ],
+            ),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Icon(
+                      Icons.menu,
+                      size: 20,
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        dataBaseController.writeData(
+                          fetchDataController.songModel!,
+                        );
+                      },
+                      child: const Icon(
+                        Icons.favorite,
+                        size: 20,
+                        color: Colors.red,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        print(dataBaseController.readData());
+                      },
+                      child: const Icon(
+                        Icons.shuffle,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.more_horiz,
+                      size: 20,
+                      color: Colors.white,
+                    )
+                  ],
                 )
               ],
             )
@@ -117,9 +132,6 @@ class _DisplayPlayingMusicState extends State<DisplayPlayingMusic> {
 
     return Column(
       children: [
-        const SizedBox(
-          height: 30,
-        ),
         Slider(
           value: controllerFetchData.position.inSeconds.toDouble(),
           onChanged: (value) {
@@ -145,7 +157,7 @@ class _DisplayPlayingMusicState extends State<DisplayPlayingMusic> {
           ],
         ),
         const SizedBox(
-          height: 30,
+          height: 20,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -202,43 +214,3 @@ class _DisplayPlayingMusicState extends State<DisplayPlayingMusic> {
     );
   }
 }
-
-// class DisplayImage extends StatefulWidget {
-//   const DisplayImage({super.key});
-
-//   @override
-//   State<DisplayImage> createState() => _DisplayImageState();
-// }
-
-// class _DisplayImageState extends State<DisplayImage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     Future<Uint8List?> albumArtwork =
-//         Provider.of<FetchData>(context, listen: false).fetchAlbumArtwork();
-
-//     @override
-//     initState() {
-//       albumArtwork;
-//       super.initState();
-//     }
-
-//     return FutureBuilder<Uint8List?>(
-//       future: albumArtwork,
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const CircularProgressIndicator();
-//         } else if (snapshot.hasError) {
-//           return Text('Error: ${snapshot.error}');
-//         } else if (!snapshot.hasData || snapshot.data == null) {
-//           return const Text('No artwork available');
-//         } else {
-//           return Image.memory(
-//             snapshot.data!,
-//             width: 100,
-//             height: 100,
-//           );
-//         }
-//       },
-//     );
-//   }
-// }
