@@ -1,6 +1,7 @@
 import 'package:audio/controler/database.dart';
 import 'package:audio/controler/fetch_data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -76,14 +77,16 @@ class _DisplayPlayingSongsState extends State<DisplayPlayingSongs> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        dataBaseController.writeData(
-                          fetchDataController.songModel!,
-                        );
+                        SongModel? songModel = fetchDataController.songModel;
+                        dataBaseController.writeData(songModel);
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.favorite,
                         size: 20,
-                        color: Colors.red,
+                        color: Provider.of<Database>(context).isInFavoriteList(
+                                fetchDataController.songModel!.title)
+                            ? Colors.red
+                            : Colors.white,
                       ),
                     ),
                     GestureDetector(
@@ -178,7 +181,6 @@ class _DisplayPlayingMusicState extends State<DisplayPlayingMusic> {
             // play btn
             InkWell(
               onTap: () {
-                print('Songmodel${controllerFetchData.songModel}');
                 controllerFetchData.playPause();
               },
               child: controllerFetchData.isPlaying

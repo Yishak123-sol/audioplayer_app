@@ -40,7 +40,7 @@ class FavortiePlayList extends StatelessWidget {
                   favoriteSong['artist'].toString(),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(favoriteSong['title'].toString(),
+                Text(favoriteSong['titel'].toString(),
                     style: const TextStyle(color: Colors.grey)),
               ],
             ),

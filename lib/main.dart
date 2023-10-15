@@ -1,6 +1,5 @@
 import 'package:audio/controler/database.dart';
 import 'package:audio/controler/fetch_data_provider.dart';
-import 'package:audio/screens/default_tab_controller/all_songs_screen.dart';
 import 'package:audio/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
